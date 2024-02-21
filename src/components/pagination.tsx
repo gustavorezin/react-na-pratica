@@ -15,7 +15,7 @@ interface PaginationProps {
   page: number;
 }
 
-export function Pagination({ items, page, pages }: PaginationProps) {
+export function Pagination({ pages, items, page }: PaginationProps) {
   const [, setSearchParams] = useSearchParams();
 
   function firstPage() {
@@ -48,6 +48,14 @@ export function Pagination({ items, page, pages }: PaginationProps) {
     });
   }
 
+  function handlePerPage(perPageSelected: string) {
+    setSearchParams((params) => {
+      params.set("page", "1");
+      params.set("per_page", String(perPageSelected));
+      return params;
+    });
+  }
+
   return (
     <div className="flex text-sm items-center justify-between text-zinc-500">
       <span>Showing 10 of {items} items</span>
@@ -55,7 +63,7 @@ export function Pagination({ items, page, pages }: PaginationProps) {
         <div className="flex items-center gap-2">
           <span>Rows per page</span>
 
-          <Select defaultValue="10">
+          <Select defaultValue="10" onValueChange={handlePerPage}>
             <SelectTrigger aria-label="Page" />
             <SelectContent>
               <SelectItem value="10">10</SelectItem>

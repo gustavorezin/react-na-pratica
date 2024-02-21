@@ -34,22 +34,27 @@ export interface Tag {
 
 export function App() {
   const [searchParams, setSearchParams] = useSearchParams();
+
   const urlFilter = searchParams.get("filter") ?? "";
   const [filter, setFilter] = useState(urlFilter);
 
   const page = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
 
+  const per_page = searchParams.get("per_page")
+    ? Number(searchParams.get("per_page"))
+    : 10;
+
   const { data: tagsReponse, isLoading } = useQuery<TagResponse>({
-    queryKey: ["get-tags", urlFilter, page],
+    queryKey: ["get-tags", urlFilter, page, per_page],
     queryFn: async () => {
       const response = await fetch(
-        `http://localhost:3333/tags?_page=${page}&_per_page=10&title=${urlFilter}`
+        `http://localhost:3333/tags?_page=${page}&_per_page=${per_page}&title=${urlFilter}`
       );
       const data = await response.json();
       return data;
     },
     placeholderData: keepPreviousData,
-    //staleTime: 1000 * 60,
+    staleTime: 1000 * 60,
   });
 
   function handleFilter() {
